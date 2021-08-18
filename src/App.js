@@ -1,25 +1,43 @@
-import logo from './logo.svg';
+
 import './App.css';
 
-function App() {
+function starWarsApp() {
+  
+  
+  
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <div className="container text-center">
+      <form>
+        <input type="text"/>
+        <button type="submit">
+          Search
+        </button>
+      </form>
+          
+          <table className="table table-bordered table-hover">
+            <thead>
+              <th>Name</th>
+              <th>Birth Date</th>
+              <th>Height</th>
+              <th>Mass</th>
+              <th>Homeworld</th>
+              <th>Species</th>
+            </thead>
+            {/* <tbody>
+          {characters.map((character) => (
+            <tr>
+              <td>{character.date}</td>
+              <td>{character.location}</td>
+              <td>{character.description}</td>
+              <td>{character.amount}</td>
+            </tr>
+          ))}
+        </tbody> */}
+          </table>
+          </div>      
+    </div> 
   );
 }
 
-export default App;
+export default starWarsApp;
