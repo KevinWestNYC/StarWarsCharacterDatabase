@@ -1,8 +1,8 @@
-
-// import './App.css';
+import React, { useState, useEffect }  from 'react';
+import CharacterList from './CharacterList';
 
 function starWarsApp() {
-  
+  const [characters, setCharacters] = useState("luke", "leia")
   
   
   return (
@@ -13,8 +13,8 @@ function starWarsApp() {
         <button type="submit">
           Search
         </button>
+      <CharacterList characters={characters} />
       </form>
-          
           <table className="table table-bordered table-hover">
             <thead>
               <th>Name</th>
