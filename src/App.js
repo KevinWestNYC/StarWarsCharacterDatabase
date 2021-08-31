@@ -1,20 +1,66 @@
 import React, { useState, useEffect }  from 'react';
-import CharacterList from './CharacterList';
+// import CharacterList from './CharacterList';
+import Pagination from './Pagination';
+import Search from './Search';
+import axios from 'axios';
 
-function starWarsApp() {
-  const [characters, setCharacters] = useState("luke", "leia")
+function StarWarsApp() {
+  const [characters, setCharacters] = useState([])
+  const [currentPageUrl, setCurrentPageUrl] = useState("https://swapi.dev/api/people/")
+  const [nextPageUrl, setNextPageUrl] = useState()
+  const [prevPageUrl, setPrevPageUrl] = useState()
+  const [loading, setLoading] = useState(true)
+  const [query, setQuery] = useState('')
+
+  useEffect(() => {
+    setLoading(true)
+    let cancel
+    axios.get(currentPageUrl, {
+      cancelToken: new axios.CancelToken(c => cancel = c)
+    }).then(response => {
+      setLoading(false)
+      setNextPageUrl(response.data.next)
+      setPrevPageUrl(response.data.previous)
+      setCharacters(response.data.results)
+  })
+
+    return () => cancel()
+    }, [currentPageUrl])
+
+    useEffect(() => {
+      const fetchItems = async () => {
+        const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
+
+        setCharacters(result.data)
+        setLoading(false)
+      }
+
+      fetchItems()
+    }, [query])
+
+    function goToNextPage() {
+      setCurrentPageUrl(nextPageUrl)
+    }
+
+    function goToPrevPage() {
+      setCurrentPageUrl(prevPageUrl)
+    }
   
   
+  if(loading) return "Loading..."
+
   return (
     <div className="App">
+      <h1>Star Wars Character Search</h1>
       <div className="container text-center">
-      <form>
-        <input type="text"/>
+      {/* <form> */}
+        <Search getQuery={(query) => setQuery(query)} />
+        {/* <input type="text"/>
         <button type="submit">
           Search
-        </button>
-      <CharacterList characters={characters} />
-      </form>
+        </button> */}
+      {/* <CharacterList characters={characters} /> */}
+      {/* </form> */}
           <table className="table table-bordered table-hover">
             <thead>
               <th>Name</th>
@@ -24,20 +70,26 @@ function starWarsApp() {
               <th>Homeworld</th>
               <th>Species</th>
             </thead>
-            {/* <tbody>
+            <tbody>
           {characters.map((character) => (
             <tr>
-              <td>{character.date}</td>
-              <td>{character.location}</td>
-              <td>{character.description}</td>
-              <td>{character.amount}</td>
+              <td>{character.name}</td>
+              <td>{character.birth_year}</td>
+              <td>{character.height}</td>
+              <td>{character.mass}</td>
+              <td>{character.homeworld}</td>
+              <td>{character.species}</td>
             </tr>
           ))}
-        </tbody> */}
+        </tbody>
           </table>
+          <Pagination 
+            goToNextPage={nextPageUrl ? goToNextPage : null}
+            goToPrevPage={prevPageUrl ? goToPrevPage : null}
+          />
           </div>      
     </div> 
   );
 }
 
-export default starWarsApp;
+export default StarWarsApp;
