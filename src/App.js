@@ -28,14 +28,15 @@ function StarWarsApp() {
     }, [currentPageUrl])
 
     useEffect(() => {
-      const fetchItems = async () => {
+      setLoading(true)
+      const fetchCharacters = async () => {
         const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
 
         setCharacters(result.data)
         setLoading(false)
       }
 
-      fetchItems()
+      fetchCharacters()
     }, [query])
 
     function goToNextPage() {
@@ -53,15 +54,8 @@ function StarWarsApp() {
     <div className="App">
       <h1>Star Wars Character Search</h1>
       <div className="container text-center">
-      {/* <form> */}
         <Search getQuery={(query) => setQuery(query)} />
-        {/* <input type="text"/>
-        <button type="submit">
-          Search
-        </button> */}
-      {/* <CharacterList characters={characters} /> */}
-      {/* </form> */}
-          <table className="table table-bordered table-hover">
+        <table className="table table-bordered table-hover">
             <thead>
               <th>Name</th>
               <th>Birth Date</th>
