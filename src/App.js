@@ -24,15 +24,12 @@ function StarWarsApp() {
           const homeworldResponse = await axios.get(homeworld)
           character.homeworld = homeworldResponse.data.name;
           
-        }
-
-        for(const character of characterData){
           const species = character.species;
           const speciesResponse = await axios.get(species)
-          
           character.species = speciesResponse.data.name
-        }  
-        
+          
+        }
+  
         setCharacters(characterData)        
     });
   };  
@@ -41,34 +38,36 @@ function StarWarsApp() {
 
     console.log("characters: ", characters)
 
+    
+    //search
     useEffect(() => {
       setLoading(true)
       const fetchCharacters = async () => {
-      const result = await axios.get(`https://swapi.dev/api/people/?search=${query}`)
-
-        setCharacters(result.data)
+      const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
         setLoading(false)
+        setCharacters(result.data)        
       }
-
       fetchCharacters()
-    }, [currentPageUrl])
+    }, [])
 
-    // useEffect(() => {
-    //   setLoading(true)
-    //   const getCharacterData = async () => {
-    //     await axios.get(currentPageUrl).then(async response => {
-    //       setLoading(false)
-    //       const characterData = response.data.results
+    
+    //Pagination
+    useEffect(() => {
+      setLoading(true)
+      const getCharacterData = async () => {
+        await axios.get(currentPageUrl).then(async response => {
+          setLoading(false)
+          const characterData = response.data.results
           
-    //     setNextPageUrl(response.data.next)
-    //     setPrevPageUrl(response.data.previous)
+        setNextPageUrl(response.data.next)
+        setPrevPageUrl(response.data.previous)
           
-    //       setCharacters(characterData)
+          setCharacters(characterData)
           
-    //     });
-    //   };      
-    //       getCharacterData();
-    //     }, [currentPageUrl])
+        });
+      };      
+          getCharacterData();
+        }, [currentPageUrl])
 
     function goToNextPage() {
       setCurrentPageUrl(nextPageUrl)
@@ -78,8 +77,7 @@ function StarWarsApp() {
       setCurrentPageUrl(prevPageUrl)
     }
   
-  
-    if(loading) return <div className="text-center"><h1>Loading...</h1></div>
+    if(loading) return <h1 className="text-center">Loading...</h1>
 
     return (
       <div className="App">

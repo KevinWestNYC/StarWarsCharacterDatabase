@@ -7,6 +7,7 @@ export default function Search({ getQuery }) {
         setText(query)
         getQuery(query)
     }
+    
 
     return (
         <div className ="search">
