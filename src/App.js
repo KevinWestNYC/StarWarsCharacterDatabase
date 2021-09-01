@@ -14,30 +14,43 @@ function StarWarsApp() {
 
   useEffect(() => {
     setLoading(true)
-    let cancel
-    axios.get(currentPageUrl, {
-      cancelToken: new axios.CancelToken(c => cancel = c)
-    }).then(response => {
-      setLoading(false)
-      setNextPageUrl(response.data.next)
-      setPrevPageUrl(response.data.previous)
-      setCharacters(response.data.results)
-  })
-
-    return () => cancel()
+    const getCharacterData = async () => {
+      await axios.get(currentPageUrl).then(response => {
+        setLoading(false)
+        
+        // setNextPageUrl(response.data.next)
+        // setPrevPageUrl(response.data.previous)
+        const characterData = response.data.results
+        
+        for(const character of characterData){
+          const homeworld = character.homeworld;
+          const homeworldResponse = axios.get(homeworld).then((res) => 
+          res);
+          character.homeworld = homeworldResponse.name;
+          console.log("homeworlds:" + homeworld)
+        }
+        
+        setCharacters(characterData)
+        
+    });
+  };
+  
+      getCharacterData();
     }, [currentPageUrl])
 
-    useEffect(() => {
-      setLoading(true)
-      const fetchCharacters = async () => {
-        const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
+    console.log("characters: ", characters)
 
-        setCharacters(result.data)
-        setLoading(false)
-      }
+    // useEffect(() => {
+    //   setLoading(true)
+    //   const fetchCharacters = async () => {
+    //     const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
 
-      fetchCharacters()
-    }, [query])
+    //     setCharacters(result.data)
+    //     setLoading(false)
+    //   }
+
+    //   fetchCharacters()
+    // }, [query])
 
     function goToNextPage() {
       setCurrentPageUrl(nextPageUrl)
@@ -65,8 +78,9 @@ function StarWarsApp() {
               <th>Species</th>
             </thead>
             <tbody>
-          {characters.map((character) => (
-            <tr>
+          {characters.length > 0 ?
+          characters.map((character) => (
+            <tr key={character.name} >
               <td>{character.name}</td>
               <td>{character.birth_year}</td>
               <td>{character.height}</td>
@@ -74,7 +88,8 @@ function StarWarsApp() {
               <td>{character.homeworld}</td>
               <td>{character.species}</td>
             </tr>
-          ))}
+          ))
+          : null}
         </tbody>
           </table>
           <Pagination 
