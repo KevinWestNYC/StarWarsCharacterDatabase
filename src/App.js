@@ -3,6 +3,7 @@ import React, { useState, useEffect }  from 'react';
 import Pagination from './Pagination';
 import Search from './Search';
 import axios from 'axios';
+import './style.css'
 
 function StarWarsApp() {
   const [characters, setCharacters] = useState([])
@@ -39,16 +40,35 @@ function StarWarsApp() {
     console.log("characters: ", characters)
 
     
-    //search
+    // //search
     useEffect(() => {
       setLoading(true)
       const fetchCharacters = async () => {
       const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
         setLoading(false)
-        setCharacters(result.data)        
+        
+        const characterData = result.data.results
+        
+        for(const character of characterData){
+          const homeworld = character.homeworld;
+          const homeworldResponse = await axios.get(homeworld)
+          character.homeworld = homeworldResponse.data.name;
+          
+          const species = character.species;
+          const speciesResponse = await axios.get(species)
+          character.species = speciesResponse.data.name
+          
+        }
+        setCharacters(characterData)        
       }
       fetchCharacters()
-    }, [])
+      
+    }, [query])
+
+    function handleSearch(e, query){
+      e.preventDefault();
+      setQuery(query);
+    }
 
     
     //Pagination
@@ -83,7 +103,7 @@ function StarWarsApp() {
       <div className="App">
         <h1 className="text-center">Star Wars Character Search</h1>
         <div className="container text-center">
-          <Search getQuery={(query) => setQuery(query)} />
+          <Search handleSearch={handleSearch} />
           <table className="table table-bordered table-hover">
               <thead>
                 <th>Name</th>

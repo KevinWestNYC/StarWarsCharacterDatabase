@@ -1,0 +1,21 @@
+@font-face {
+    font-family: 'StarWarsFont';
+    src: url('./Starjedi.ttf') format("truetype");
+ }
+  
+ h1 {
+    font-family: 'StarWarsFont';
+    color: white;
+ }
+
+ .App {
+     background-image: url(./starwarsbackground.jpg);
+     background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+ }
+
+ th,td {
+     color:white;
+     font-weight: bold;
+ }

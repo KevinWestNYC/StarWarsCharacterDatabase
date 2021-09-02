@@ -1,23 +1,17 @@
 import React, { useState } from 'react'
 
-export default function Search({ getQuery }) {
-    const [text, setText] = useState('')
-
-    const onChange = (query) => {
-        setText(query)
-        getQuery(query)
-    }
-    
+export default function Search({ handleSearch }) {
+    const [text, setText] = useState('')    
 
     return (
         <div className ="search">
-            <form>
+            <form onSubmit={(e) => handleSearch(e, text)}>
                 <input 
                     type='text'
                     className="form-control"
                     placeholder="Search Characters"
                     value={text}
-                    onChange={(e) => onChange(e.target.value)}
+                    onChange={(e) => setText(e.target.value)}
                     autoFocus
                 />
             </form>
