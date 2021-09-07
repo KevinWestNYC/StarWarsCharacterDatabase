@@ -19,3 +19,8 @@
      color:white;
      font-weight: bold;
  }
+
+ .table {
+    margin: auto;
+    width: 75% !important; 
+ }

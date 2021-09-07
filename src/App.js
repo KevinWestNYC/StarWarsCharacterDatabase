@@ -59,7 +59,7 @@ function StarWarsApp() {
         <h1 className="text-center">Star Wars Character Search</h1>
         <div className="container text-center">
           <Search handleSearch={handleSearch} />
-          <table className="table table-bordered table-hover">
+          <table className="table table-bordered table-hover table-responsive">
               <thead>
                 <th>Name</th>
                 <th>Birth Date</th>
