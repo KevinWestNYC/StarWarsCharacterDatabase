@@ -49,6 +49,10 @@ function StarWarsApp() {
       setCurrentPageUrl(prevPageUrl)
     }
 
+    function goToFirstPage() {
+      setCurrentPageUrl("https://swapi.dev/api/people/")
+    }
+
 
     return (
       <div className="App">
@@ -84,6 +88,7 @@ function StarWarsApp() {
             <Pagination 
               goToNextPage={nextPageUrl ? goToNextPage : null}
               goToPrevPage={prevPageUrl ? goToPrevPage : null}
+              goToFirstPage={characters.length < 10 ? goToFirstPage : null}
             />
             </div>      
       </div> 

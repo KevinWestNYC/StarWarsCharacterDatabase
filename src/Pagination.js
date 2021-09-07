@@ -5,6 +5,7 @@ export default function Pagination({ goToNextPage, goToPrevPage, goToFirstPage }
         <div>
             {goToPrevPage && <button onClick={goToPrevPage}>Previous</button>}
             {goToNextPage && <button onClick={goToNextPage}>Next</button>}
+            {goToFirstPage && <button onClick={goToFirstPage}>Reset</button>}
         </div>
     )
 }

@@ -3,13 +3,13 @@ import React, { useState } from 'react'
 export default function Search({ handleSearch }) {
     const [text, setText] = useState('')    
 
-    const onSearch = () => {
+    const onSearch = e => {
         handleSearch(e, text)
         setText('')
     }
 
-    handleChange = e => {
-        setText(e.target.value
+    const handleChange = e => {
+        setText(e.target.value)
     }
 
     return (
