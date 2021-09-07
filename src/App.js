@@ -1,5 +1,4 @@
 import React, { useState, useEffect }  from 'react';
-// import CharacterList from './CharacterList';
 import Pagination from './Pagination';
 import Search from './Search';
 import axios from 'axios';
@@ -11,43 +10,18 @@ function StarWarsApp() {
   const [nextPageUrl, setNextPageUrl] = useState()
   const [prevPageUrl, setPrevPageUrl] = useState()
   const [loading, setLoading] = useState(true)
-  const [query, setQuery] = useState('')
 
-  useEffect(() => {
-    setLoading(true)
-    const getCharacterData = async () => {
-      await axios.get(currentPageUrl).then(async response => {
-        setLoading(false)
-        const characterData = response.data.results
-        
-        for(const character of characterData){
-          const homeworld = character.homeworld;
-          const homeworldResponse = await axios.get(homeworld)
-          character.homeworld = homeworldResponse.data.name;
-          
-          const species = character.species;
-          const speciesResponse = await axios.get(species)
-          character.species = speciesResponse.data.name
-          
-        }
-  
-        setCharacters(characterData)        
-    });
-  };  
-      getCharacterData();
+  useEffect(() => {       
+    getCharacterData();
     }, [currentPageUrl])
 
-    console.log("characters: ", characters)
-
     
-    // //search
-    useEffect(() => {
-      setLoading(true)
-      const fetchCharacters = async () => {
-      const result = await axios(`https://swapi.dev/api/people/?search=${query}`)
-        setLoading(false)
-        
-        const characterData = result.data.results
+    const getCharacterData = async () => {
+        setLoading(true) 
+        const response = await axios.get(currentPageUrl)
+        const characterData = response.data.results
+        setNextPageUrl(response.data.next)
+        setPrevPageUrl(response.data.previous)
         
         for(const character of characterData){
           const homeworld = character.homeworld;
@@ -57,37 +31,15 @@ function StarWarsApp() {
           const species = character.species;
           const speciesResponse = await axios.get(species)
           character.species = speciesResponse.data.name
-          
         }
-        setCharacters(characterData)        
-      }
-      fetchCharacters()
-      
-    }, [query])
+        setCharacters(characterData)
+        setLoading(false)
+    };
 
     function handleSearch(e, query){
       e.preventDefault();
-      setQuery(query);
+      setCurrentPageUrl(`https://swapi.dev/api/people/?search=${query}`)
     }
-
-    
-    //Pagination
-    useEffect(() => {
-      setLoading(true)
-      const getCharacterData = async () => {
-        await axios.get(currentPageUrl).then(async response => {
-          setLoading(false)
-          const characterData = response.data.results
-          
-        setNextPageUrl(response.data.next)
-        setPrevPageUrl(response.data.previous)
-          
-          setCharacters(characterData)
-          
-        });
-      };      
-          getCharacterData();
-        }, [currentPageUrl])
 
     function goToNextPage() {
       setCurrentPageUrl(nextPageUrl)
@@ -96,8 +48,7 @@ function StarWarsApp() {
     function goToPrevPage() {
       setCurrentPageUrl(prevPageUrl)
     }
-  
-    if(loading) return <h1 className="text-center">Loading...</h1>
+
 
     return (
       <div className="App">
@@ -113,6 +64,8 @@ function StarWarsApp() {
                 <th>Homeworld</th>
                 <th>Species</th>
               </thead>
+              
+              {loading ? <h1 className="text-center">Loading...</h1> : 
               <tbody>
             {characters.length > 0 ?
             characters.map((character) => (
@@ -125,8 +78,8 @@ function StarWarsApp() {
                 <td>{character.species || "Humanoid"}</td>
               </tr>
             ))
-            : null}
-          </tbody>
+            : null }
+          </tbody>}
             </table>
             <Pagination 
               goToNextPage={nextPageUrl ? goToNextPage : null}
